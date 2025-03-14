@@ -1,0 +1,132 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.logout {
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s;
+    background-color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+  
+.logout:hover {
+    color: #fff;
+    background-color: #1f1f1f;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+.profile-header img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+
+.profile-header .info {
+    flex-grow: 1;
+    margin-left: 20px;
+}
+
+.articles {
+    padding: 20px;
+}
+
+.article {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.article img {
+    width: 80px;
+    height: 80px;
+    margin-right: 20px;
+    background-color: #ddd;
+}
+
+.article .content {
+    flex-grow: 1;
+}
+
+.article .actions {
+    text-align: right;
+}
+
+.actions i {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    width: 415px;
+    margin: 0 auto;
+    border-radius: 10px;
+    border: #cecece 1px solid;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: -20px;
+}
+
+input {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px;
+    background-color: #34495e;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+button:hover {
+    background-color: #1abc9c;
+}
+
+.toggle-buttons {
+    margin-top: 20px;
+}
+
+.toggle-buttons button {
+    margin: 0 10px;
+}
+
+form a{
+    text-decoration: none;
+    transition: all 0.3s;
+    color: #34495e;
+}
+
+form a:hover{
+    color: #1abc9c;
+}
