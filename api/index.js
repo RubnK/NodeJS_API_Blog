@@ -1,5 +1,7 @@
 const express = require('express');
 const User = require('./models/user');
+const Post = require('./models/post');
+const Category = require('./models/category');
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -49,15 +51,17 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
     try {
       const { identifier, password } = req.body;
-      const user = await User.getUserByUsername(identifier);
+      const user = await User.getUserByIdentifier(identifier);
 
       if (!user || !(await bcrypt.compare(password, user.password))) {
         return res.status(401).json({ error: "Identifiants invalides" });
       }
 
-      const token = jwt.sign({ id: user.id, identifier: user.username }, SECRET_KEY, {
-        expiresIn: "2h",
-      });
+      const token = jwt.sign(
+        { id: user.user_id, username: user.username },
+        SECRET_KEY,
+        { expiresIn: "2h" }
+      );
 
       res.json({ token });
     } catch (error) {
@@ -85,16 +89,17 @@ app.get("/articles/:id", authenticate, async (req, res) => {
     }
 });
 
-// ROUTE : Ajouter un article
-app.post("/articles", authenticate, async (req, res) => {
-    try {
-      const { title, content, image } = req.body;
-      const newArticle = await User.createArticle({ title, content, image });
-      res.status(201).json(newArticle);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
+// ROUTE : Récupérer les articles populaires
+app.get("/articles", authenticate, async (req, res) => {
+  try {
+    const articles = await Post.getTopArticles();
+    res.status(200).json(articles);
+  } catch (error) {
+    console.error("Erreur /articles :", error.message);
+    res.status(500).json({ error: "Erreur serveur lors du chargement des articles" });
+  }
 });
+
 
 // ROUTE : Mettre à jour un article
 app.put("/articles/:id", authenticate, async (req, res) => {
@@ -113,6 +118,16 @@ app.delete("/articles/:id", authenticate, async (req, res) => {
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ error: error.message });
+    }
+});
+
+app.get("/categories", async (req, res) => {
+    try {
+      const categories = await Category.getCategories();
+      res.status(200).json(categories);
+    } catch (error) {
+      console.error("Erreur /categories :", error.message);
+      res.status(500).json({ error: "Erreur serveur lors du chargement des catégories" });
     }
 });
 

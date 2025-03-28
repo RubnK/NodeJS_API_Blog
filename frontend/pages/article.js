@@ -11,11 +11,11 @@ export default function Post({ articleId }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const articleRes = await fetch(`/api/articles/${articleId}`);
+        const articleRes = await fetch(`http://localhost:3001/articles/${articleId}`);
         const articleData = await articleRes.json();
         setArticle(articleData);
 
-        const commentsRes = await fetch(`/api/articles/${articleId}/comments`);
+        const commentsRes = await fetch(`http://localhost:3001/articles/${articleId}/comments`);
         const commentsData = await commentsRes.json();
         setComments(commentsData);
 
@@ -30,7 +30,7 @@ export default function Post({ articleId }) {
 
   const handleLike = async () => {
     if (!isLoggedIn) return;
-    const response = await fetch(`/api/articles/${articleId}/like`, {
+    const response = await fetch(`http://localhost:3001/articles/${articleId}/like`, {
       method: "POST",
       body: JSON.stringify({ like: 1 }),
       headers: { "Content-Type": "application/json" },
@@ -45,7 +45,7 @@ export default function Post({ articleId }) {
     e.preventDefault();
     if (!isLoggedIn || !newComment) return;
 
-    const response = await fetch(`/api/articles/${articleId}/comments`, {
+    const response = await fetch(`http://localhost:3001/articles/${articleId}/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content: newComment }),

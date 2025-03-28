@@ -17,12 +17,25 @@ export default function Home() {
 
   useEffect(() => {
     if (token) {
-      fetch("http://localhost:3001/article", {
-        headers: { Authorization: `Bearer ${token}` }, // Envoi du token JWT
+      fetch("http://localhost:3001/articles", {
+        headers: { Authorization: `Bearer ${token}` },
       })
-        .then((res) => res.json())
-        .then((data) => setArticles(data))
-        .catch((err) => console.error("Erreur lors du chargement des articles :", err));
+        .then(async (res) => {
+          const text = await res.text();
+          try {
+            const data = JSON.parse(text);
+            if (!res.ok) {
+              throw new Error(data.error || "Erreur inconnue");
+            }
+            setArticles(data);
+          } catch (err) {
+            console.error("Réponse non JSON ou erreur API :", text);
+            throw err;
+          }
+        })
+        .catch((err) => {
+          console.error("Erreur lors du chargement des articles :", err.message);
+        });      
     }
   }, [token]);
 
@@ -42,11 +55,11 @@ export default function Home() {
         ) : (
           articles.map((article) => (
             <li key={article.id}>
-              <a href={`/article/${article.id}`} style={{ marginRight: "10px" }}>
+              <a href={`/articles/${article.id}`} style={{ marginRight: "10px" }}>
                 {article.title} - {article.content.substring(0, 50)}...
               </a>
               <button onClick={async () => {
-                await fetch(`http://localhost:3001/article/${article.id}`, {
+                await fetch(`http://localhost:3001/articles/${article.id}`, {
                   method: "DELETE",
                   headers: { Authorization: `Bearer ${token}` }, // Envoi du token JWT
                 });

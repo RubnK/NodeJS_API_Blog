@@ -1,7 +1,4 @@
-import { useState } from "react";
-import dynamic from "next/dynamic";
-
-const CKEditor = dynamic(() => import("react-ckeditor-component"), { ssr: false });
+import { useState, useEffect } from "react";
 
 export default function CreateArticle() {
   const [title, setTitle] = useState("");
@@ -13,7 +10,7 @@ export default function CreateArticle() {
   // Load categories from your API
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await fetch('/api/categories');
+      const response = await fetch('http://localhost:3001/categories');
       const data = await response.json();
       setCategories(data);
     };
@@ -67,13 +64,15 @@ export default function CreateArticle() {
         /><br /><br />
 
         <label htmlFor="content">Contenu :</label><br />
-        <CKEditor
+        <textarea
+          id="content"
           name="content"
-          content={content}
-          events={{
-            change: (e) => setContent(e.editor.getData()),
-          }}
-        /><br /><br />
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          rows={10}
+          cols={50}
+        />
+        <br/><br/>
 
         <label htmlFor="image">Image :</label><br />
         <input

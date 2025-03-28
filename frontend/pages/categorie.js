@@ -10,11 +10,11 @@ export default function Category({ categoryId }) {
     // Récupérer la catégorie et les articles via une API
     const fetchData = async () => {
       try {
-        const categoryRes = await fetch(`/api/categories/${categoryId}`);
+        const categoryRes = await fetch(`http://localhost:3001/categories/${categoryId}`);
         const categoryData = await categoryRes.json();
         setCategory(categoryData);
 
-        const articlesRes = await fetch(`/api/categories/${categoryId}/articles`);
+        const articlesRes = await fetch(`http://localhost:3001/categories/${categoryId}/articles`);
         const articlesData = await articlesRes.json();
         setArticles(articlesData);
       } catch (error) {

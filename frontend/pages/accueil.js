@@ -7,7 +7,7 @@ export default function Trends() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch('/api/articles/tendances');
+        const response = await fetch('http://localhost:3001/articles/tendances');
         const data = await response.json();
         setArticles(data);
       } catch (error) {

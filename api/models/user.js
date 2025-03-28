@@ -51,8 +51,8 @@ class User {
     }
   }
   
-  static async getUserByUsername(username) {
-    const result = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
+  static async getUserByIdentifier(identifier) {
+    const result = await pool.query("SELECT * FROM users WHERE username = $1 OR email = $1", [identifier]);
     return result.rows[0];
   }
 
