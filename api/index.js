@@ -100,6 +100,16 @@ app.get("/articles", authenticate, async (req, res) => {
   }
 });
 
+// ROUTE : Ajouter un article
+app.post("/articles", authenticate, async (req, res) => {
+  try {
+    const { title, content, author, image, category } = req.body;
+    const newArticle = await Post.createArticle(title, content, author, image, category);
+    res.status(201).json(newArticle);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // ROUTE : Mettre à jour un article
 app.put("/articles/:id", authenticate, async (req, res) => {
@@ -123,11 +133,11 @@ app.delete("/articles/:id", authenticate, async (req, res) => {
 
 app.get("/categories", async (req, res) => {
     try {
-      const categories = await Category.getCategories();
+      const categories = await Category.getAllCategories();
       res.status(200).json(categories);
     } catch (error) {
-      console.error("Erreur /categories :", error.message);
-      res.status(500).json({ error: "Erreur serveur lors du chargement des catégories" });
+      console.error("Erreur /categories :", error);
+      res.status(500).json({ error: "Erreur serveur lors du chargement des catégories : " + error });
     }
 });
 

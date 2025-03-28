@@ -32,7 +32,7 @@ export default function CreateArticle() {
     formData.append("category", category);
 
     try {
-      const response = await fetch("/api/articles", {
+      const response = await fetch("http://localhost:3001/articles", {
         method: "POST",
         body: formData,
       });

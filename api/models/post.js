@@ -37,7 +37,7 @@ class Post {
     return result.rows;
   }
 
-  static async createArticle({ title, content, author, image, category }) {
+  static async createArticle(title, content, author, image, category) {
     const result = await pool.query(
       "INSERT INTO articles (title, content, user_id, image, category_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
       [title, content, author, image, category]
