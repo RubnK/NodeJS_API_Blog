@@ -10,22 +10,6 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-class User {
-  static async createUser({ username, email, password }) {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const result = await pool.query(
-      "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *",
-      [username, email, hashedPassword]
-    );
-    return result.rows[0];
-  }
-
-  static async getUserByUsername(username) {
-    const result = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
-    return result.rows[0];
-  }
-}
-
 class Post {
   static async getArticle(id) {
     const result = await pool.query(

@@ -50,6 +50,11 @@ class User {
       throw new Error("Error creating user");
     }
   }
+  
+  static async getUserByUsername(username) {
+    const result = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
+    return result.rows[0];
+  }
 
   static async updateUser(id, username, email, password) {
     try {

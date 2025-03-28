@@ -32,16 +32,13 @@ app.post("/register", async (req, res) => {
       const { username, email, password } = req.body;
 
       // Vérifier si l'utilisateur existe déjà
-      const existingUser = await User.getUserByUsername(username);
+      const existingUser = await User.userExists(username, email);
       if (existingUser) {
-        return res.status(400).json({ error: "Nom d'utilisateur déjà pris" });
+        return res.status(400).json({ error: "Cet utilisateur existe déjà." });
       }
 
-      // Hash du mot de passe
-      const hashedPassword = await bcrypt.hash(password, 10);
-
       // Créer un nouvel utilisateur
-      const newUser = await User.createUser({ username, email, password: hashedPassword });
+      const newUser = await User.createUser( username, email, password );
       res.status(201).json({ message: "Utilisateur créé", user: newUser });
     } catch (error) {
       res.status(500).json({ error: error.message });
