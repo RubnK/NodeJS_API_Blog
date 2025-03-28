@@ -48,14 +48,14 @@ app.post("/register", async (req, res) => {
 // ROUTE : Connexion
 app.post("/login", async (req, res) => {
     try {
-      const { username, password } = req.body;
-      const user = await User.getUserByUsername(username);
+      const { identifier, password } = req.body;
+      const user = await User.getUserByUsername(identifier);
 
       if (!user || !(await bcrypt.compare(password, user.password))) {
         return res.status(401).json({ error: "Identifiants invalides" });
       }
 
-      const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, {
+      const token = jwt.sign({ id: user.id, identifier: user.username }, SECRET_KEY, {
         expiresIn: "2h",
       });
 
