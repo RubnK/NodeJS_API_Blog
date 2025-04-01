@@ -3,29 +3,43 @@ import { useRouter } from 'next/router';
 
 export default function UserProfile() {
   const [user, setUser] = useState(null);
-  const [userArticles, setUserArticles] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
-    // Remplacer par la logique de récupération des données depuis l'API
-    const fetchUserData = async () => {
-      const response = await fetch('/api/user');
-      const data = await response.json();
-      setUser(data.user);
-      setUserArticles(data.userArticles);
-    };
+    // Récupérer l'ID de l'utilisateur du localStorage
+    const userId = localStorage.getItem('user_id');
+    console.log("userId dans localStorage :", userId); // Vérification de l'ID utilisateur
 
-    fetchUserData();
-  }, []);
+    if (!userId) {
+      router.push('/login'); // Si l'ID de l'utilisateur n'existe pas, redirige vers /login
+    } else {
+      const fetchUserData = async () => {
+        try {
+          const response = await fetch(`http://localhost:3001/user/${userId}`);
+          const data = await response.json();
+
+          console.log("Données utilisateur récupérées :", data); // Afficher les données récupérées
+
+          if (data) {  // Utiliser directement `data` (l'objet utilisateur)
+            setUser(data);
+          } else {
+            console.error("Erreur dans les données utilisateur :", data); // Si les données sont invalides
+          }
+        } catch (error) {
+          console.error("Erreur lors de la récupération des données utilisateur :", error); // Gérer l'erreur
+        }
+      };
+
+      fetchUserData();
+    }
+  }, [router]);
 
   const handleLogout = async () => {
-    await fetch('/api/logout', { method: 'POST' });
-    router.push('/login');
+    localStorage.removeItem('user_id'); // Supprimer l'ID utilisateur du localStorage
+    router.push('/login'); // Rediriger vers la page de connexion
   };
 
-  if (!user) {
-    return <p>Chargement...</p>;
-  }
+  if (!user) return <p>Chargement...</p>;
 
   return (
     <div>
@@ -36,29 +50,9 @@ export default function UserProfile() {
           <p>Inscrit le : {new Date(user.created_at).toLocaleDateString()}</p>
           <a href={`mailto:${user.email}`}>{user.email}</a>
         </div>
-        {user.id === 1 && ( // Remplace 1 par la logique de comparaison de l'ID utilisateur connecté
+        {/* Vérifiez l'ID pour afficher le bouton Déconnexion */}
+        {parseInt(user.user_id) === parseInt(localStorage.getItem('user_id')) && (
           <button onClick={handleLogout} className="logout">Déconnexion</button>
-        )}
-      </div>
-
-      <div className="articles">
-        <h2>Articles publiés</h2>
-        {userArticles.length > 0 ? (
-          userArticles.map((article) => (
-            <div key={article.article_id} className="article">
-              <img src={`/uploads/${article.image}`} alt="Image de l'article" />
-              <div className="content">
-                <h3><a href={`/article?article_id=${article.article_id}`}>{article.title}</a></h3>
-                <p>{article.content.substring(0, 150)}...</p>
-                <p><small>Publié le : {new Date(article.created_at).toLocaleString()}</small></p>
-              </div>
-              <div className="actions">
-                <i>👁</i> <i>❤️</i> <i>↗️</i>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>Aucun article publié.</p>
         )}
       </div>
     </div>

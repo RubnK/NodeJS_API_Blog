@@ -56,6 +56,11 @@ class User {
     return result.rows[0];
   }
 
+  static async getUserByID(id) {
+    const result = await pool.query("SELECT * FROM users WHERE user_id = $1", [id]);
+    return result.rows[0];
+  }
+
   static async updateUser(id, username, email, password) {
     try {
       const hashedPassword = await bcrypt.hash(password, 10);

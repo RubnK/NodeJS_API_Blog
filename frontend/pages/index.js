@@ -1,24 +1,25 @@
-import { useEffect, useState, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import AuthContext from "../context/AuthContext";
-
 
 export default function Home() {
-  const { token } = useContext(AuthContext); // Vérifier si l'utilisateur est connecté
-  const router = useRouter();
+  const [userId, setUserId] = useState(null);
   const [articles, setArticles] = useState([]);
+  const router = useRouter();
 
-  // Redirige vers /login si l'utilisateur n'est pas connecté
+  // Vérification de la connexion côté client uniquement
   useEffect(() => {
-    if (!token) {
-      router.push("/login");
+    const storedUserId = localStorage.getItem("user_id");
+    if (storedUserId) {
+      setUserId(storedUserId); // On met à jour l'état avec l'user_id
+    } else {
+      router.push("/login"); // Si pas d'user_id, redirige vers la page de login
     }
-  }, [token]);
+  }, [router]);
 
   useEffect(() => {
-    if (token) {
+    if (userId) {
       fetch("http://localhost:3001/articles", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${userId}` }, // Passer l'user_id comme token dans l'en-tête (si nécessaire)
       })
         .then(async (res) => {
           const text = await res.text();
@@ -35,35 +36,39 @@ export default function Home() {
         })
         .catch((err) => {
           console.error("Erreur lors du chargement des articles :", err.message);
-        });      
+        });
     }
-  }, [token]);
+  }, [userId]);
 
-  if (!token) return <p>Redirection en cours...</p>; // Affiche un message pendant la redirection
+  // Affichage d'un message pendant la redirection
+  if (!userId) return <p>Redirection en cours...</p>;
+
+  // Fonction de déconnexion
+  const handleLogout = () => {
+    localStorage.removeItem("user_id");
+    router.push("/login");
+  };
 
   return (
     <div>
       <h1>Liste des Articles</h1>
-      <a href="/add" style={{ display: "block", marginBottom: "20px" }}>Ajouter un Article</a>
-      <button onClick={() => {
-        localStorage.removeItem("token"); // Supprime le token
-        window.location.reload(); // Recharge la page pour forcer la déconnexion
-      }}>Se Déconnecter</button>
+      <a href="/post" style={{ display: "block", marginBottom: "20px" }}>Ajouter un Article</a>
+      <button onClick={handleLogout}>Se Déconnecter</button>
       <ul>
         {articles.length === 0 ? (
           <p>Aucun article disponible.</p>
         ) : (
           articles.map((article) => (
-            <li key={article.id}>
-              <a href={`/articles/${article.id}`} style={{ marginRight: "10px" }}>
-                {article.title} - {article.content.substring(0, 50)}...
+            <li key={article.article_id}>
+              <a href={`/articles/${article.article_id}`} style={{ marginRight: "10px" }}>
+                {article.title} - {article.content ? article.content.substring(0, 50) + "..." : "Contenu indisponible"}
               </a>
               <button onClick={async () => {
-                await fetch(`http://localhost:3001/articles/${article.id}`, {
+                await fetch(`http://localhost:3001/articles/${article.article_id}`, {
                   method: "DELETE",
-                  headers: { Authorization: `Bearer ${token}` }, // Envoi du token JWT
+                  headers: { Authorization: `Bearer ${userId}` }, // Passer l'user_id ici également
                 });
-                setArticles(articles.filter((a) => a.id !== article.id));
+                setArticles(articles.filter((a) => a.article_id !== article.article_id));
               }}>
                 Supprimer
               </button>

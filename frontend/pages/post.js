@@ -1,105 +1,69 @@
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function CreateArticle() {
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState("");
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
-  
-  // Load categories from your API
+
   useEffect(() => {
-    const fetchCategories = async () => {
-      const response = await fetch('http://localhost:3001/categories');
-      const data = await response.json();
-      setCategories(data);
-    };
+    const userId = localStorage.getItem("user_id");
+    if (!userId) {
+      router.push("/login"); // Pas connecté
+    }
 
-    fetchCategories();
+    fetch("http://localhost:3001/categories")
+      .then((res) => res.json())
+      .then((data) => setCategories(data));
   }, []);
-
-  const handleFileChange = (e) => {
-    setImage(e.target.files[0]);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const author = localStorage.getItem("user_id");
+    console.log({ title, content, author, image, category });
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("content", content);
-    formData.append("image", image);
-    formData.append("category", category);
+    const articleData = { title, content, author, image, category };
 
-    try {
-      const response = await fetch("http://localhost:3001/articles", {
-        method: "POST",
-        body: formData,
-      });
-      
-      if (response.ok) {
-        // Handle success (maybe redirect to the article page)
-        alert("Article créé avec succès");
-      } else {
-        alert("Erreur lors de la création de l'article");
-      }
-    } catch (error) {
-      console.error("Erreur d'envoi:", error);
-      alert("Une erreur est survenue lors de l'envoi");
+    const response = await fetch("http://localhost:3001/articles", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(articleData),
+    });
+
+    if (response.ok) {
+      alert("Article créé !");
+      router.push("/");
+    } else {
+      alert("Erreur lors de la création");
     }
   };
 
   return (
     <div>
       <h1>Créer un nouvel article</h1>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
+      <form onSubmit={handleSubmit}>
         <label htmlFor="title">Titre :</label><br />
-        <input
-          type="text"
-          id="title"
-          name="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        /><br /><br />
+        <input type="text" id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} required/><br/><br/>
 
         <label htmlFor="content">Contenu :</label><br />
-        <textarea
-          id="content"
-          name="content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          rows={10}
-          cols={50}
-        />
-        <br/><br/>
+        <textarea value={content} onChange={(e) => setContent(e.target.value)} required /><br/><br/>
 
-        <label htmlFor="image">Image :</label><br />
-        <input
-          type="file"
-          id="image"
-          name="image"
-          accept="image/*"
-          onChange={handleFileChange}
-          required
-        /><br /><br />
+        <label htmlFor="image">Image :</label><br/>
+        <input value={image} onChange={(e) => setImage(e.target.value)} required /><br/><br/>
 
-        <label htmlFor="category">Catégorie :</label><br />
-        <select
-          id="category"
-          name="category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
-        >
-          {categories.map((category) => (
-            <option key={category.category_id} value={category.category_id}>
-              {category.name}
+        <label htmlFor="category">Catégorie :</label><br/>
+        <select value={category} onChange={(e) => setCategory(e.target.value)} required>
+          <option value="" disabled>Choisir une catégorie</option>
+          {categories.map((cat) => (
+            <option key={cat.category_id} value={cat.category_id}>
+              {cat.name}
             </option>
           ))}
-        </select><br /><br />
-
-        <button type="submit">Créer l'article</button>
+        </select><br/><br/>
+        <button type="submit">Publier</button>
       </form>
     </div>
   );

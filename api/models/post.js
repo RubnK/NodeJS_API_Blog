@@ -102,4 +102,4 @@ class Post {
   }
 }
 
-module.exports = { Post };
+module.exports = Post;
