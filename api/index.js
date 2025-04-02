@@ -59,8 +59,8 @@ app.get("/user/:id/articles", async (req, res) => {
 // ROUTE : Récupérer un article spécifique
 app.get("/articles/:id", async (req, res) => {
     try {
-      const article = await Post.getArticleById(req.params.id);
-      article ? res.status(200).json(article) : res.status(404).json({ message: "Article non trouvé" });
+      const article = await Post.getArticle(req.params.id);
+      article ? res.status(200).json(article) : res.status(404).json({ message: "Article non trouvé"  });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

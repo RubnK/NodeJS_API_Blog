@@ -1,36 +1,42 @@
-import { useState, useEffect } from "react";
-import Link from "next/link";
+// pages/articles/[id].js
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-export default function Post({ articleId }) {
+export default function Article() {
   const [article, setArticle] = useState(null);
   const [comments, setComments] = useState([]);
   const [likesCount, setLikesCount] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Si l'utilisateur est connecté
   const [newComment, setNewComment] = useState("");
+  const router = useRouter();
+  const { id } = router.query; // Récupère l'ID de l'article depuis l'URL
 
   useEffect(() => {
+    if (!id) return; // Si l'ID n'est pas encore disponible, ne rien faire
+
     const fetchData = async () => {
       try {
-        const articleRes = await fetch(`http://localhost:3001/articles/${articleId}`);
+        // Récupération des informations de l'article
+        const articleRes = await fetch(`http://localhost:3001/articles/${id}`);
         const articleData = await articleRes.json();
         setArticle(articleData);
+        setLikesCount(articleData.likesCount || 0); // Assurez-vous que `likesCount` existe
 
-        const commentsRes = await fetch(`http://localhost:3001/articles/${articleId}/comments`);
+        // Récupération des commentaires de l'article
+        const commentsRes = await fetch(`http://localhost:3001/articles/${id}/comments`);
         const commentsData = await commentsRes.json();
         setComments(commentsData);
-
-        setLikesCount(articleData.likesCount); // Assurez-vous que `likesCount` est renvoyé depuis l'API.
       } catch (error) {
         console.error("Erreur lors de la récupération des données :", error);
       }
     };
 
     fetchData();
-  }, [articleId]);
+  }, [id]);
 
   const handleLike = async () => {
     if (!isLoggedIn) return;
-    const response = await fetch(`http://localhost:3001/articles/${articleId}/like`, {
+    const response = await fetch(`http://localhost:3001/articles/${id}/like`, {
       method: "POST",
       body: JSON.stringify({ like: 1 }),
       headers: { "Content-Type": "application/json" },
@@ -45,7 +51,7 @@ export default function Post({ articleId }) {
     e.preventDefault();
     if (!isLoggedIn || !newComment) return;
 
-    const response = await fetch(`http://localhost:3001/articles/${articleId}/comments`, {
+    const response = await fetch(`http://localhost:3001/articles/${id}/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content: newComment }),
@@ -62,80 +68,44 @@ export default function Post({ articleId }) {
 
   return (
     <div className="container">
-      <Link href={`/category?id=${article.category_id}`} passHref>
-        <a className="back-link">← Retour à la liste des articles</a>
-      </Link>
-
-      <div className="post" id={`post-${article.article_id}`}>
+      <div className="post">
         <div className="header">
-          <div className="profile">
-            <div className="profile-pic">
-              <img src="/uploads/user.png" alt="User" />
-            </div>
-            <Link href={`/profil?id=${article.user_id}`} passHref>
-              <a className="username">{article.username}</a>
-            </Link>
-          </div>
-        </div>
-
-        <div className="post-details">
-          <img
-            src={`/uploads/${article.post_image}`}
-            alt="Publication"
-            className="post-image"
-          />
           <h1>{article.title}</h1>
-          <p>Aimé {likesCount} fois</p>
-          <i className="meta">
-            Publié le {new Date(article.posted_at).toLocaleDateString("fr-FR")} à{" "}
-            {new Date(article.posted_at).toLocaleTimeString("fr-FR")}
-          </i>
+          <p>Publié le {new Date(article.posted_at).toLocaleDateString("fr-FR")}</p>
+        </div>
+        <div className="content">
+          <img src={`/uploads/${article.post_image}`} alt="Image de l'article" />
           <div dangerouslySetInnerHTML={{ __html: article.content }} />
         </div>
-
-        <div className="action">
+        <div className="actions">
           {isLoggedIn ? (
             <button onClick={handleLike} className="like-btn">
-              🤍
+              👍 {likesCount} J'aime
             </button>
           ) : (
-            <p>
-              <Link href="/register">
-                <a>S'inscrire</a>
-              </Link>{" "}
-              pour interagir.
-            </p>
+            <p><a href="/login">Connectez-vous</a> pour aimer cet article</p>
           )}
         </div>
 
         <div className="commentaires">
           <h2>Commentaires</h2>
-
           {isLoggedIn ? (
             <form onSubmit={handleCommentSubmit} className="comment-form">
               <textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Écrire votre commentaire..."
-              ></textarea>
-              <button type="submit" className="submit-comment">
-                Publier
-              </button>
+                placeholder="Écrivez votre commentaire..."
+              />
+              <button type="submit">Publier</button>
             </form>
           ) : (
-            <p>
-              <Link href="/register">
-                <a>S'inscrire</a>
-              </Link>{" "}
-              pour commenter.
-            </p>
+            <p><a href="/login">Connectez-vous</a> pour commenter</p>
           )}
 
           <div className="comments-section">
             {comments.map((comment) => (
               <div key={comment.comment_id} className="comment">
-                <h3 className="comment-author">{comment.username}:</h3>
-                <p className="comment-text">{comment.content}</p>
+                <p><strong>{comment.username}:</strong> {comment.content}</p>
               </div>
             ))}
           </div>
