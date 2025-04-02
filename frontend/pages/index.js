@@ -53,6 +53,7 @@ export default function Home() {
     <div>
       <h1>Liste des Articles</h1>
       <a href="/post" style={{ display: "block", marginBottom: "20px" }}>Ajouter un Article</a>
+      <a href="/profil" style={{ display: "block", marginBottom: "20px" }}>Mon Profil</a>
       <button onClick={handleLogout}>Se Déconnecter</button>
       <ul>
         {articles.length === 0 ? (
