@@ -114,6 +114,20 @@ class User {
       throw new Error("Error checking user existence");
     }
   }
+
+  static async searchUsers(searchQuery) {
+    try {
+      const result = await pool.query(
+        `SELECT user_id, username, email, image AS user_image FROM users 
+        WHERE username ILIKE $1 OR email ILIKE $1`,
+        [`%${searchQuery}%`] // Recherche insensible à la casse
+      );
+      return result.rows; // Retourne la liste des utilisateurs correspondants
+    } catch (error) {
+      console.error("Erreur lors de la recherche des utilisateurs :", error);
+      throw new Error("Erreur lors de la recherche des utilisateurs");
+    }
+  }
 }
 
 module.exports = User;
