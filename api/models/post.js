@@ -54,7 +54,7 @@ class Post {
 
   static async getComments(id) {
     const result = await pool.query(
-      "SELECT * FROM comments JOIN users ON comments.user_id = users.user_id WHERE article_id = $1",
+      "SELECT * FROM comments JOIN users ON comments.user_id = users.user_id WHERE article_id = $1 ORDER BY comment_id DESC", 
       [id]
     );
     return result.rows;

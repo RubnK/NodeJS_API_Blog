@@ -135,6 +135,17 @@ app.get("/user/:id", async (req, res) => {
   }
 });
 
+// ROUTE : Mettre à jour un utilisateur
+app.put("/user/:id", async (req, res) => {
+    try {
+      const { username, email, password, image } = req.body;
+      const updatedUser = await User.updateUser(req.params.id, username, email, password, image);
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+});
+
 // ROUTE : Récupérer les commentaires d'un article
 app.get("/articles/:id/comments", async (req, res) => {
     try {
