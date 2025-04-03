@@ -49,7 +49,7 @@ app.post("/login", async (req, res) => {
 // ROUTE : Récupérer les articles de l'utilisateur
 app.get("/user/:id/articles", async (req, res) => {
     try {
-      const userArticles = await User.getUserArticles(req.params.id);
+      const userArticles = await Post.getArticlesByUser(req.params.id);
       res.status(200).json(userArticles);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -132,6 +132,27 @@ app.get("/user/:id", async (req, res) => {
   } catch (error) {
     console.error("Erreur /user/:id :", error.message);
     res.status(500).json({ error: "Erreur serveur lors du chargement de l'utilisateur : " + error });
+  }
+});
+
+// ROUTE : Récupérer les commentaires d'un article
+app.get("/articles/:id/comments", async (req, res) => {
+    try {
+      const comments = await Post.getComments(req.params.id);
+      res.status(200).json(comments);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+});
+
+// ROUTE : Ajouter un commentaire à un article
+app.post("/articles/:id/comments", async (req, res) => {
+  try {
+    const { content, user_id } = req.body; // Assurez-vous que user_id est un entier valide
+    const newComment = await Post.createComment(req.params.id, user_id, content); // Passez l'article ID, user ID, et content
+    res.status(201).json(newComment);  // Retournez le nouveau commentaire ajouté
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 

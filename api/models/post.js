@@ -13,9 +13,10 @@ const pool = new Pool({
 class Post {
   static async getArticle(id) {
     const result = await pool.query(
-      `SELECT *, articles.created_at AS posted_at, articles.image AS post_image 
+      `SELECT *, articles.created_at AS posted_at, articles.image AS post_image, categories.name AS category_name
        FROM articles 
        JOIN users ON articles.user_id = users.user_id 
+       JOIN categories ON articles.category_id = categories.category_id 
        WHERE article_id = $1`,
       [id]
     );
@@ -28,12 +29,12 @@ class Post {
   }
 
   static async getArticlesByUser(id) {
-    const result = await pool.query("SELECT * FROM articles WHERE user_id = $1", [id]);
+    const result = await pool.query("SELECT * FROM articles WHERE user_id = $1 ORDER BY created_at DESC", [id]);
     return result.rows;
   }
 
   static async getAllArticles() {
-    const result = await pool.query("SELECT * FROM articles");
+    const result = await pool.query("SELECT * FROM articles ORDER BY created_at DESC");
     return result.rows;
   }
 
@@ -46,6 +47,7 @@ class Post {
   }
 
   static async deleteArticle(id) {
+    await pool.query("DELETE FROM comments WHERE article_id = $1", [id]);
     await pool.query("DELETE FROM articles WHERE article_id = $1", [id]);
     return { message: "Article deleted successfully" };
   }
@@ -58,13 +60,14 @@ class Post {
     return result.rows;
   }
 
-  static async createComment({ article_id, author, content }) {
+  static async createComment(article_id, user_id, content) {
     const result = await pool.query(
       "INSERT INTO comments (article_id, user_id, content) VALUES ($1, $2, $3) RETURNING *",
-      [article_id, author, content]
+      [article_id, user_id, content] 
     );
     return result.rows[0];
   }
+
 
   static async deleteComment(id) {
     await pool.query("DELETE FROM comments WHERE comment_id = $1", [id]);
