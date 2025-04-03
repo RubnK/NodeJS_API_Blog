@@ -28,13 +28,25 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 20px 20px;
   background-color: #333;
   color: white;
 }
+header .logo {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  transition:all 0.3s;
+}
+
+header .logo:hover {
+  color: #ccc;
+}
+
 .actions button {
   color: white;
   text-decoration: none;
+  font-size: 1.2em;
   margin: 0 10px;
   padding: 10px;
   background-color: #555;
@@ -43,4 +55,77 @@ header {
 
 .actions button:hover {
   background-color: #444;
+}
+
+a{
+  text-decoration: none;
+  color: #333;
+  transition: all 0.3s;
+}
+
+a:hover{
+  color: #1abc9c;
+}
+/* Conteneur de toutes les cartes */
+.articles-container {
+  display: flex;
+  flex-wrap: wrap; /* Permet de revenir à la ligne lorsque le conteneur est plein */
+  gap: 20px; /* Espacement entre les cartes */
+  justify-content: space-evenly; /* Pour centrer les cartes dans le conteneur */
+  padding: 20px;
+}
+
+/* Style pour chaque carte */
+.article-card {
+  width: calc(33.333% - 20px); /* 3 cartes par ligne, ajustez la largeur */
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère */
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Effet de transition */
+}
+
+/* Style pour l'image */
+.article-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-bottom: 1px solid #eaeaea; /* Séparation entre l'image et le contenu */
+}
+
+/* Contenu de la carte */
+.article-content {
+  padding: 15px;
+}
+
+.article-content h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.article-content p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.article-content .read-more {
+  display: inline-block;
+  margin-top: 10px;
+  color: #0070f3;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.article-content .read-more:hover {
+  color: #004ba1;
+  font-size: 1.05em; /* Légère augmentation de la taille au survol */
+  transition: font-size 0.1s ease; /* Transition douce pour l'agrandissement */
+}
+
+/* Effet au survol de la carte */
+.article-card:hover {
+  transform: translateY(-5px); /* Légère élévation au survol */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Ombre plus marquée */
 }
