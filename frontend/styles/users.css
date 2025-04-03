@@ -74,7 +74,7 @@ h1 {
     margin-top: 20px;
 }
 
-.edit-profile form {
+.edit-profile form, .create-article form, .comment-form {
     display: flex;
     flex-direction: column;
     margin-top: 20px;
@@ -84,6 +84,13 @@ h1 {
     border: #cecece 1px solid;
     padding: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-profile form select, .create-article form select, .comment-form select {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
 label {
@@ -98,7 +105,7 @@ input {
     border-radius: 4px;
 }
 
-.edit-profile button {
+.edit-profile button, .create-article button, .comment-form button {
     padding: 10px;
     background-color: #34495e;
     color: #fff;
@@ -109,7 +116,7 @@ input {
     transition: all 0.3s;
 }
 
-.edit-profile button:hover {
+.edit-profile button:hover, .create-article button:hover, .comment-form button:hover {
     background-color: #1abc9c;
 }
 
@@ -121,7 +128,7 @@ input {
     margin: 0 10px;
 }
 
-.edit-profile form a{
+.edit-profile form a, .create-article form a, .comment-form a {
     text-decoration: none;
     transition: all 0.3s;
     color: #34495e;

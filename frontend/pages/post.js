@@ -42,7 +42,7 @@ export default function CreateArticle() {
   };
 
   return (
-    <div>
+    <div className="create-article">
       <h1>Créer un nouvel article</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="title">Titre :</label><br />
