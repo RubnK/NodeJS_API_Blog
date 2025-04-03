@@ -1,6 +1,5 @@
 import { AuthProvider } from "../context/AuthContext";
 import '../styles/users.css';
-import '../styles/style.css'; 
 import '../styles/global.css';
 import '../styles/article.css';
 import Header from "../components/Header";

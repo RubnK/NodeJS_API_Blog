@@ -28,13 +28,25 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 20px 20px;
   background-color: #333;
   color: white;
 }
+header .logo {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  transition:all 0.3s;
+}
+
+header .logo:hover {
+  color: #ccc;
+}
+
 .actions button {
   color: white;
   text-decoration: none;
+  font-size: 1.2em;
   margin: 0 10px;
   padding: 10px;
   background-color: #555;
@@ -45,7 +57,15 @@ header {
   background-color: #444;
 }
 
+a{
+  text-decoration: none;
+  color: #333;
+  transition: all 0.3s;
+}
 
+a:hover{
+  color: #1abc9c;
+}
 /* Conteneur de toutes les cartes */
 .articles-container {
   display: flex;
@@ -99,7 +119,9 @@ header {
 }
 
 .article-content .read-more:hover {
-  text-decoration: underline;
+  color: #004ba1;
+  font-size: 1.05em; /* Légère augmentation de la taille au survol */
+  transition: font-size 0.1s ease; /* Transition douce pour l'agrandissement */
 }
 
 /* Effet au survol de la carte */
