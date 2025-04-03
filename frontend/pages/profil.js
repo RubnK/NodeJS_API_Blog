@@ -1,32 +1,31 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 export default function UserProfile() {
   const [user, setUser] = useState(null);
+  const [userArticles, setUserArticles] = useState([]); // État pour stocker les articles de l'utilisateur
   const router = useRouter();
 
   useEffect(() => {
-    // Récupérer l'ID de l'utilisateur du localStorage
-    const userId = localStorage.getItem('user_id');
-    console.log("userId dans localStorage :", userId); // Vérification de l'ID utilisateur
+    const userId = localStorage.getItem('user_id'); // Récupérer l'ID de l'utilisateur du localStorage
 
     if (!userId) {
-      router.push('/login'); // Si l'ID de l'utilisateur n'existe pas, redirige vers /login
+      router.push('/login'); // Si l'utilisateur n'est pas connecté, redirige vers la page de login
     } else {
+      // Récupérer les données de l'utilisateur
       const fetchUserData = async () => {
         try {
           const response = await fetch(`http://localhost:3001/user/${userId}`);
           const data = await response.json();
+          setUser(data); // Stocker les données de l'utilisateur dans l'état
 
-          console.log("Données utilisateur récupérées :", data); // Afficher les données récupérées
-
-          if (data) {  // Utiliser directement `data` (l'objet utilisateur)
-            setUser(data);
-          } else {
-            console.error("Erreur dans les données utilisateur :", data); // Si les données sont invalides
-          }
+          // Récupérer les articles publiés par cet utilisateur
+          const articlesResponse = await fetch(`http://localhost:3001/user/${userId}/articles`);
+          const articlesData = await articlesResponse.json();
+          setUserArticles(articlesData); // Stocker les articles de l'utilisateur
         } catch (error) {
-          console.error("Erreur lors de la récupération des données utilisateur :", error); // Gérer l'erreur
+          console.error('Erreur lors de la récupération des données utilisateur :', error);
         }
       };
 
@@ -34,12 +33,12 @@ export default function UserProfile() {
     }
   }, [router]);
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     localStorage.removeItem('user_id'); // Supprimer l'ID utilisateur du localStorage
     router.push('/login'); // Rediriger vers la page de connexion
   };
 
-  if (!user) return <p>Chargement...</p>;
+  if (!user) return <p>Chargement...</p>; // Afficher "Chargement..." si les données de l'utilisateur ne sont pas encore récupérées
 
   return (
     <div>
@@ -50,9 +49,36 @@ export default function UserProfile() {
           <p>Inscrit le : {new Date(user.created_at).toLocaleDateString()}</p>
           <a href={`mailto:${user.email}`}>{user.email}</a>
         </div>
-        {/* Vérifiez l'ID pour afficher le bouton Déconnexion */}
-        {parseInt(user.user_id) === parseInt(localStorage.getItem('user_id')) && (
-          <button onClick={handleLogout} className="logout">Déconnexion</button>
+        <button onClick={handleLogout} className="logout">
+          Déconnexion
+        </button>
+      </div>
+
+      {/* Affichage des articles publiés par l'utilisateur */}
+      <div className="user-articles">
+        <h2>Articles publiés</h2>
+        {userArticles.length > 0 ? (
+          <div className="articles-container">
+            {userArticles.map((article) => (
+              <div key={article.article_id} className="article-card">
+                <img
+                  src={article.image}
+                  alt={article.title}
+                  className="article-image"
+                />
+                <div className="article-content">
+                  <h2>{article.title}</h2>
+                  <p>{article.content ? article.content.substring(0, 150) + "..." : "Contenu indisponible"}</p>
+                  <p>Publié le {new Date(article.created_at).toLocaleDateString("fr-FR")}</p>
+                  <Link href={`/articles/${article.article_id}`} className="read-more">
+                    Lire plus
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>Aucun article publié.</p>
         )}
       </div>
     </div>

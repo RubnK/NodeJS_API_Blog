@@ -9,6 +9,10 @@ export default function UserProfile() {
   const { id } = router.query; // Récupère l'ID de l'utilisateur à partir de l'URL
 
   useEffect(() => {
+    // Vérifier si l'utilisateur connecté est le même que celui affiché
+    if (parseInt(localStorage.getItem('user_id')) == parseInt(id)) {
+      router.push('/profil');
+    }
     if (!id) return; // Ne fait rien tant que l'ID n'est pas disponible dans l'URL
 
     // Récupérer les informations de l'utilisateur
@@ -63,10 +67,6 @@ export default function UserProfile() {
           <p>Inscrit le : {new Date(user.created_at).toLocaleDateString()}</p>
           <a href={`mailto:${user.email}`}>{user.email}</a>
         </div>
-        {/* Vérifiez si l'utilisateur connecté correspond à l'ID de l'utilisateur affiché */}
-        {parseInt(user.user_id) === parseInt(localStorage.getItem('user_id')) && (
-          <button onClick={handleLogout} className="logout">Déconnexion</button>
-        )}
       </div>
 
       <div className="user-articles">
