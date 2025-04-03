@@ -61,12 +61,12 @@ class User {
     return result.rows[0];
   }
 
-  static async updateUser(id, username, email, password) {
+  static async updateUser(id, username, email, password, image) {
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
       const result = await pool.query(
-        "UPDATE users SET username = $1, email = $2, password = $3 WHERE user_id = $4 RETURNING *",
-        [username, email, hashedPassword, id]
+        "UPDATE users SET username = $1, email = $2, password = $3, image = $4 WHERE user_id = $5 RETURNING *",
+        [username, email, hashedPassword, image, id]
       );
       return result.rows[0];
     } catch (err) {

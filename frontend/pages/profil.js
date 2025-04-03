@@ -1,29 +1,34 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
+import Link from 'next/link'; // Assurez-vous que Link est bien importé
 
 export default function UserProfile() {
   const [user, setUser] = useState(null);
-  const [userArticles, setUserArticles] = useState([]); // État pour stocker les articles de l'utilisateur
+  const [userArticles, setUserArticles] = useState([]);
+  const [newUsername, setNewUsername] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [newImage, setNewImage] = useState(''); // Nouveau champ pour l'image
+  const [newPassword, setNewPassword] = useState(''); // Nouveau champ pour le mot de passe
+  const [message, setMessage] = useState('');
   const router = useRouter();
 
   useEffect(() => {
-    const userId = localStorage.getItem('user_id'); // Récupérer l'ID de l'utilisateur du localStorage
-
+    const userId = localStorage.getItem('user_id');
     if (!userId) {
-      router.push('/login'); // Si l'utilisateur n'est pas connecté, redirige vers la page de login
+      router.push('/login');
     } else {
-      // Récupérer les données de l'utilisateur
       const fetchUserData = async () => {
         try {
           const response = await fetch(`http://localhost:3001/user/${userId}`);
           const data = await response.json();
-          setUser(data); // Stocker les données de l'utilisateur dans l'état
+          setUser(data);
+          setNewUsername(data.username);
+          setNewEmail(data.email);
+          setNewImage(data.image || ''); // Assurez-vous que l'image de l'utilisateur est récupérée
 
-          // Récupérer les articles publiés par cet utilisateur
           const articlesResponse = await fetch(`http://localhost:3001/user/${userId}/articles`);
           const articlesData = await articlesResponse.json();
-          setUserArticles(articlesData); // Stocker les articles de l'utilisateur
+          setUserArticles(articlesData);
         } catch (error) {
           console.error('Erreur lors de la récupération des données utilisateur :', error);
         }
@@ -34,27 +39,114 @@ export default function UserProfile() {
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem('user_id'); // Supprimer l'ID utilisateur du localStorage
-    router.push('/login'); // Rediriger vers la page de connexion
+    localStorage.removeItem('user_id');
+    router.push('/login');
   };
 
-  if (!user) return <p>Chargement...</p>; // Afficher "Chargement..." si les données de l'utilisateur ne sont pas encore récupérées
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+
+    const userId = localStorage.getItem('user_id');
+    if (!userId) return;
+
+    const dataToUpdate = {
+      username: newUsername,
+      email: newEmail,
+      image: newImage, // Lien de l'image
+    };
+
+    // Si un mot de passe a été fourni, l'ajouter à la requête de mise à jour
+    if (newPassword) {
+      dataToUpdate.password = newPassword;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3001/user/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToUpdate),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage('Profil mis à jour avec succès!');
+        router.reload();  // Réactualise la page après la mise à jour du profil
+      } else {
+        setMessage('Erreur lors de la mise à jour du profil.');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du profil :', error);
+      setMessage('Erreur lors de la mise à jour du profil.');
+    }
+  };
+
+  if (!user) return <p>Chargement...</p>;
 
   return (
     <div>
       <div className="profile-header">
-        <img src="/uploads/user.png" alt="Photo de profil" />
+        <img src={user.image || '/uploads/user.png'} alt="Photo de profil" />
         <div className="info">
           <h1>{user.username}</h1>
           <p>Inscrit le : {new Date(user.created_at).toLocaleDateString()}</p>
           <a href={`mailto:${user.email}`}>{user.email}</a>
         </div>
-        <button onClick={handleLogout} className="logout">
-          Déconnexion
-        </button>
+
+        {parseInt(user.user_id) === parseInt(localStorage.getItem('user_id')) && (
+          <button onClick={handleLogout} className="logout">
+            Déconnexion
+          </button>
+        )}
       </div>
 
-      {/* Affichage des articles publiés par l'utilisateur */}
+      <div className="edit-profile">
+        <h2>Modifier le profil</h2>
+        <form onSubmit={handleUpdateProfile}>
+          <div>
+            <label>Nom d'utilisateur :</label>
+            <input
+              type="text"
+              value={newUsername}
+              onChange={(e) => setNewUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label>Email :</label>
+            <input
+              type="email"
+              value={newEmail}
+              onChange={(e) => setNewEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label>Image (URL) :</label>
+            <input
+              type="text"
+              value={newImage}
+              onChange={(e) => setNewImage(e.target.value)}
+              placeholder="Entrez l'URL de l'image"
+            />
+          </div>
+          <div>
+            <label>Mot de passe :</label>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Entrez un nouveau mot de passe"
+            />
+          </div>
+          <button type="submit">Mettre à jour</button>
+        </form>
+
+        {message && <p>{message}</p>}
+      </div>
+
       <div className="user-articles">
         <h2>Articles publiés</h2>
         {userArticles.length > 0 ? (

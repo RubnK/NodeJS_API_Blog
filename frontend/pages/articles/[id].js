@@ -6,12 +6,12 @@ export default function Post() {
   const [comments, setComments] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [newComment, setNewComment] = useState("");
-  const [showConfirmDelete, setShowConfirmDelete] = useState(false); // État pour afficher la modale
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false); 
   const router = useRouter();
-  const { id } = router.query; // Récupère l'ID de l'article à partir de l'URL
+  const { id } = router.query;
 
   useEffect(() => {
-    if (!id) return; // Ne pas faire de requête si l'ID n'est pas encore disponible
+    if (!id) return;
     const fetchData = async () => {
       try {
         const articleRes = await fetch(`http://localhost:3001/articles/${id}`);
@@ -23,7 +23,7 @@ export default function Post() {
         setComments(commentsData);
 
         const userId = localStorage.getItem("user_id");
-        if (userId) setIsAuthenticated(true); // Vérification si l'utilisateur est connecté
+        if (userId) setIsAuthenticated(true); 
       } catch (error) {
         console.error("Erreur lors de la récupération de l'article :", error);
       }
@@ -41,7 +41,7 @@ export default function Post() {
 
       if (response.ok) {
         alert("Article supprimé avec succès");
-        router.push("/"); // Redirection vers la page d'accueil après suppression
+        router.push("/");
       } else {
         alert("Erreur lors de la suppression de l'article");
       }
@@ -50,10 +50,8 @@ export default function Post() {
     }
   };
 
-  // Afficher ou masquer la modale de confirmation de suppression
   const toggleConfirmDelete = () => setShowConfirmDelete(!showConfirmDelete);
 
-  // Fonction de soumission du commentaire
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!newComment) return;
@@ -65,9 +63,8 @@ export default function Post() {
     });
 
     if (response.ok) {
-      // Réactualiser la page pour afficher les commentaires mis à jour
       router.reload();
-      setNewComment(""); // Réinitialiser le champ du commentaire
+      setNewComment(""); 
     } else {
       console.error("Erreur lors de l'ajout du commentaire");
     }
@@ -80,7 +77,7 @@ export default function Post() {
       <div className="header">
         <div className="profile">
           <div className="profile-pic">
-            <img src="/uploads/user.png" alt="User" />
+            <img src={article.image || '/uploads/user.png'} alt="User" />
           </div>
           <a href={`/profil/${article.user_id}`} className="username">
             {article.username}
@@ -99,14 +96,12 @@ export default function Post() {
         <div dangerouslySetInnerHTML={{ __html: article.content }} />
       </div>
 
-      {/* Bouton de suppression */}
       {isAuthenticated && article.user_id === parseInt(localStorage.getItem("user_id")) && (
         <button className="delete-btn" onClick={toggleConfirmDelete}>
           Supprimer l'article
         </button>
       )}
 
-      {/* Modale de confirmation de suppression */}
       {showConfirmDelete && (
         <div className="confirm-delete-modal">
           <div className="modal-content">
@@ -121,7 +116,6 @@ export default function Post() {
         </div>
       )}
 
-      {/* Section des commentaires */}
       <div className="commentaires">
         <h2>Commentaires</h2>
 
@@ -145,9 +139,16 @@ export default function Post() {
         <div className="comments-section">
           {comments.map((comment) => (
             <div key={comment.comment_id} className="comment">
-              <a href={`/profil/${comment.user_id}`} className="comment-username">
-                <h3 className="comment-author">{comment.username}:</h3>
-              </a>
+              <div className="profile">
+                <img
+                  src={comment.image || '/uploads/user.png'}
+                  alt={comment.username}
+                  className="profile-pic"
+                />
+                <a href={`/profil/${comment.user_id}`}>
+                    <h3 className="comment-author">{comment.username}:</h3>
+                </a>
+              </div>
               <p className="comment-text">{comment.content}</p>
             </div>
           ))}

@@ -61,7 +61,7 @@ export default function UserProfile() {
   return (
     <div>
       <div className="profile-header">
-        <img src="/uploads/user.png" alt="Photo de profil" />
+        <img src={user.image || '/uploads/user.png'} alt="Photo de profil" />
         <div className="info">
           <h1>{user.username}</h1>
           <p>Inscrit le : {new Date(user.created_at).toLocaleDateString()}</p>
