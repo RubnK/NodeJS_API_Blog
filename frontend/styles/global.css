@@ -1,9 +1,11 @@
 html, body {
-  height: 100%; 
-  padding: 0; 
-  margin: 0; 
+  height: 100%;
+  padding: 0;
+  margin: 0;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
+  font-family: Arial, sans-serif;
+  text-align: center;
 }
 
 #__next {
@@ -13,12 +15,13 @@ html, body {
 }
 
 footer {
-  margin-top: auto; 
+  margin-top: auto;
   text-align: center;
   padding: 20px;
   background-color: #333;
   color: white;
 }
+
 a {
   color: inherit;
   text-decoration: none;
@@ -32,68 +35,102 @@ header {
   background-color: #333;
   color: white;
 }
+
 header .logo {
   color: #fff;
   font-size: 1.5rem;
   font-weight: bold;
-  transition:all 0.3s;
+  transition: all 0.3s;
 }
 
 header .logo:hover {
   color: #ccc;
 }
 
+/* Barre de recherche */
+.search-form {
+  display: flex;
+  align-items: center;
+  position: relative;
+  max-width: 300px;
+  width: 100%;
+}
+
+.search-form input {
+  padding: 8px 12px;
+  font-size: 14px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.search-btn {
+  top: auto;
+  bottom: auto;
+  position: absolute;
+  right: 0;
+  background-color: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+.search-btn:hover {
+  background-color: none;
+}
+
+/* Actions pour le bouton de connexion et autres */
 .actions button {
   color: white;
   text-decoration: none;
   font-size: 1.2em;
   margin: 0 10px;
   padding: 10px;
-  background-color: #555;
-  border-radius: 5px;
+  background-color: #34495e;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: bold;
 }
 
 .actions button:hover {
   background-color: #444;
 }
 
-a{
+a {
   text-decoration: none;
   color: #333;
   transition: all 0.3s;
 }
 
-a:hover{
+a:hover {
   color: #1abc9c;
 }
-/* Conteneur de toutes les cartes */
+
 .articles-container {
   display: flex;
-  flex-wrap: wrap; /* Permet de revenir à la ligne lorsque le conteneur est plein */
-  gap: 20px; /* Espacement entre les cartes */
-  justify-content: space-evenly; /* Pour centrer les cartes dans le conteneur */
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-evenly;
   padding: 20px;
 }
 
-/* Style pour chaque carte */
 .article-card {
-  width: calc(33.333% - 20px); /* 3 cartes par ligne, ajustez la largeur */
+  width: calc(33.333% - 20px);
   background-color: #fff;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Effet de transition */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Style pour l'image */
 .article-image {
   width: 100%;
   height: auto;
   object-fit: cover;
-  border-bottom: 1px solid #eaeaea; /* Séparation entre l'image et le contenu */
+  border-bottom: 1px solid #eaeaea;
 }
 
-/* Contenu de la carte */
 .article-content {
   padding: 15px;
 }
@@ -120,12 +157,11 @@ a:hover{
 
 .article-content .read-more:hover {
   color: #004ba1;
-  font-size: 1.05em; /* Légère augmentation de la taille au survol */
-  transition: font-size 0.1s ease; /* Transition douce pour l'agrandissement */
+  font-size: 1.05em;
+  transition: font-size 0.1s ease;
 }
 
-/* Effet au survol de la carte */
 .article-card:hover {
-  transform: translateY(-5px); /* Légère élévation au survol */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Ombre plus marquée */
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }

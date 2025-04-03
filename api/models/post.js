@@ -73,36 +73,19 @@ class Post {
     await pool.query("DELETE FROM comments WHERE comment_id = $1", [id]);
     return { message: "Comment deleted successfully" };
   }
-
-  static async getTopArticles() {
+  
+  static async searchArticles(search) {
     const result = await pool.query(
-      `SELECT articles.article_id, 
-              (SELECT COUNT(*) FROM comments WHERE comments.article_id = articles.article_id) + 
-              (SELECT COUNT(*) FROM likes WHERE likes.article_id = articles.article_id) AS interactions_count 
-       FROM articles ORDER BY interactions_count DESC LIMIT 6`
+      `SELECT *, articles.created_at AS posted_at, articles.image AS post_image, categories.name AS category_name
+       FROM articles 
+       JOIN users ON articles.user_id = users.user_id 
+       JOIN categories ON articles.category_id = categories.category_id 
+       WHERE articles.title ILIKE $1 OR articles.content ILIKE $1`,
+      [`%${search}%`]
     );
     return result.rows;
   }
-
-  static async likeArticle(user_id, article_id) {
-    await pool.query("INSERT INTO likes (user_id, article_id) VALUES ($1, $2)", [user_id, article_id]);
-    return { message: "Article liked successfully" };
-  }
-
-  static async unlikeArticle(id) {
-    await pool.query("DELETE FROM likes WHERE article_id = $1", [id]);
-    return { message: "Like removed successfully" };
-  }
-
-  static async getArticleLikesCount(id) {
-    const result = await pool.query("SELECT COUNT(*) FROM likes WHERE article_id = $1", [id]);
-    return result.rows[0].count;
-  }
-
-  static async getArticleLikes(id) {
-    const result = await pool.query("SELECT * FROM likes WHERE article_id = $1", [id]);
-    return result.rows;
-  }
 }
+
 
 module.exports = Post;

@@ -74,7 +74,7 @@ h1 {
     margin-top: 20px;
 }
 
-form {
+.edit-profile form {
     display: flex;
     flex-direction: column;
     margin-top: 20px;
@@ -98,7 +98,7 @@ input {
     border-radius: 4px;
 }
 
-button {
+.edit-profile button {
     padding: 10px;
     background-color: #34495e;
     color: #fff;
@@ -109,7 +109,7 @@ button {
     transition: all 0.3s;
 }
 
-button:hover {
+.edit-profile button:hover {
     background-color: #1abc9c;
 }
 
@@ -121,7 +121,7 @@ button:hover {
     margin: 0 10px;
 }
 
-form a{
+.edit-profile form a{
     text-decoration: none;
     transition: all 0.3s;
     color: #34495e;
