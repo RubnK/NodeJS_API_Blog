@@ -7,6 +7,10 @@ export default function Login() {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  if (typeof window !== "undefined" && localStorage.getItem("user_id")) {
+    router.push("/"); 
+  }
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -20,10 +24,9 @@ export default function Login() {
     const data = await response.json();
 
     if (response.ok) {
-      // 🔐 Stocke user_id et username en localStorage
       localStorage.setItem("user_id", data.user.user_id);
       localStorage.setItem("username", data.user.username);
-      router.push("/");
+      router.reload();
     } else {
       setError(data.error || "Identifiants incorrects");
     }
