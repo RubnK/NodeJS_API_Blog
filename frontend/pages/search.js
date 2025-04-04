@@ -4,22 +4,18 @@ import Link from 'next/link';
 
 export default function Search() {
   const [searchResults, setSearchResults] = useState({ articles: [], users: [] });
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { query } = router.query; // Récupérer la requête de recherche
 
   useEffect(() => {
     if (query) {
       const fetchSearchResults = async () => {
-        setLoading(true); // Démarre le chargement
         try {
           const response = await fetch(`http://localhost:3001/search?query=${query}`);
           const data = await response.json();
           setSearchResults(data); // Met à jour les résultats (articles et utilisateurs)
         } catch (error) {
           console.error("Erreur lors de la récupération des résultats de recherche", error);
-        } finally {
-          setLoading(false); // Arrête le chargement
         }
       };
 
@@ -27,13 +23,10 @@ export default function Search() {
     }
   }, [query]);
 
-  if (loading) return <p>Chargement...</p>;
-
   return (
     <div>
       <h1>Résultats de la recherche pour : "{query}"</h1>
 
-      {/* Résultats des articles */}
       <h2>Articles</h2>
       {searchResults.articles.length === 0 ? (
         <p>Aucun article trouvé.</p>
@@ -59,7 +52,7 @@ export default function Search() {
         </div>
       )}
 
-      {/* Résultats des utilisateurs */}
+
       <h2>Utilisateurs</h2>
       {searchResults.users.length === 0 ? (
         <p>Aucun utilisateur trouvé.</p>

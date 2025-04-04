@@ -12,7 +12,7 @@ export default function CreateArticle() {
   useEffect(() => {
     const userId = localStorage.getItem("user_id");
     if (!userId) {
-      router.push("/login"); // Pas connecté
+      router.push("/login"); // Pas connecté -> rediriger vers page connexion
     }
 
     fetch("http://localhost:3001/categories")

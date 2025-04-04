@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Link from 'next/link'; // Assurez-vous que Link est bien importé
+import Link from 'next/link'; 
 
 export default function UserProfile() {
   const [user, setUser] = useState(null);
   const [userArticles, setUserArticles] = useState([]);
   const [newUsername, setNewUsername] = useState('');
   const [newEmail, setNewEmail] = useState('');
-  const [newImage, setNewImage] = useState(''); // Nouveau champ pour l'image
-  const [newPassword, setNewPassword] = useState(''); // Nouveau champ pour le mot de passe
+  const [newImage, setNewImage] = useState(''); 
+  const [newPassword, setNewPassword] = useState(''); 
   const [message, setMessage] = useState('');
   const router = useRouter();
 
@@ -24,7 +24,7 @@ export default function UserProfile() {
           setUser(data);
           setNewUsername(data.username);
           setNewEmail(data.email);
-          setNewImage(data.image || ''); // Assurez-vous que l'image de l'utilisateur est récupérée
+          setNewImage(data.image || ''); 
 
           const articlesResponse = await fetch(`http://localhost:3001/user/${userId}/articles`);
           const articlesData = await articlesResponse.json();
@@ -52,13 +52,9 @@ export default function UserProfile() {
     const dataToUpdate = {
       username: newUsername,
       email: newEmail,
-      image: newImage, // Lien de l'image
+      image: newImage, 
+      password: newPassword, 
     };
-
-    // Si un mot de passe a été fourni, l'ajouter à la requête de mise à jour
-    if (newPassword) {
-      dataToUpdate.password = newPassword;
-    }
 
     try {
       const response = await fetch(`http://localhost:3001/user/${userId}`, {
@@ -73,7 +69,7 @@ export default function UserProfile() {
 
       if (response.ok) {
         setMessage('Profil mis à jour avec succès!');
-        router.reload();  // Réactualise la page après la mise à jour du profil
+        router.reload(); 
       } else {
         setMessage('Erreur lors de la mise à jour du profil.');
       }
@@ -139,6 +135,7 @@ export default function UserProfile() {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Entrez un nouveau mot de passe"
+              required
             />
           </div>
           <button type="submit">Mettre à jour</button>

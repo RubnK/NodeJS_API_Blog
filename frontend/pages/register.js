@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 export default function Register() {
@@ -10,6 +10,10 @@ export default function Register() {
   const [error, setError] = useState(null);
   const router = useRouter();
 
+  if (typeof window !== "undefined" && localStorage.getItem("user_id")) {
+    router.push("/"); // Déjà connecté -> rediriger vers la page d'accueil
+  }
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -17,7 +21,7 @@ export default function Register() {
       [name]: value
     }));
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 

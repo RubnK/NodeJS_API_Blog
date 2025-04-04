@@ -8,7 +8,7 @@ export default function Login() {
   const router = useRouter();
 
   if (typeof window !== "undefined" && localStorage.getItem("user_id")) {
-    router.push("/"); 
+    router.push("/"); // Déjà connecté -> rediriger vers la page d'accueil
   }
 
   const handleLogin = async (e) => {
