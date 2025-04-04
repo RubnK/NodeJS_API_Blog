@@ -36,24 +36,21 @@ This is a simple blog application built with **Node.js** and **PostgreSQL**. It 
 ## Project Structure
 ```
 /api
-│── config/                              # Database configuration
 │── models/                              # Database models
-│── routes/                              # API routes
 │   ├── user.js                          # User related routes
-│   ├── article.js                       # Article related routes
-│   ├── comment.js                       # Comment related routes
-│   └── category.js                      # Category related routes
+│   └── post.js                          # Article related routes
 │── index.js                             # Main API route file
+│── .env                                 # Environment variables file (store sensitive information)
+│── package.json                         # API dependencies and scripts
+
+/bdd
 │── init.sql                             # Initial SQL file for setting up the database
-│── .env                                  # Environment variables file (store sensitive information)
-│── README.md                            # Documentation
 
 /frontend
-│── src/                                 # Frontend source files (Next.js)
+│── pages/                               # Frontend pages
 │── public/                              # Static files (e.g., images)
+│── styles/                              # Style files
 │── package.json                         # Frontend dependencies and scripts
-│── .gitignore                           # Git ignore file for frontend
-│── README.md                            # Frontend documentation
 ```
 
 ---
