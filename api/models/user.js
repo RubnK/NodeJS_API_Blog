@@ -21,16 +21,6 @@ class User {
     }
   }
 
-  static async getAllUsers() {
-    try {
-      const result = await pool.query("SELECT * FROM users");
-      return result.rows;
-    } catch (err) {
-      console.error("Error getting all users:", err);
-      throw new Error("Error fetching all users");
-    }
-  }
-
   static async createUser(username, email, password) {
     try {
       // Vérification si l'utilisateur existe déjà
@@ -75,16 +65,6 @@ class User {
     }
   }
 
-  static async deleteUser(id) {
-    try {
-      const result = await pool.query("DELETE FROM users WHERE user_id = $1 RETURNING *", [id]);
-      return result.rows[0];
-    } catch (err) {
-      console.error("Error deleting user:", err);
-      throw new Error("Error deleting user");
-    }
-  }
-
   static async login(identifier, password) {
     try {
       const result = await pool.query(
@@ -120,9 +100,9 @@ class User {
       const result = await pool.query(
         `SELECT user_id, username, email, image AS user_image FROM users 
         WHERE username ILIKE $1 OR email ILIKE $1`,
-        [`%${searchQuery}%`] // Recherche insensible à la casse
+        [`%${searchQuery}%`] 
       );
-      return result.rows; // Retourne la liste des utilisateurs correspondants
+      return result.rows; 
     } catch (error) {
       console.error("Erreur lors de la recherche des utilisateurs :", error);
       throw new Error("Erreur lors de la recherche des utilisateurs");

@@ -1,7 +1,6 @@
 const express = require('express');
 const User = require('./models/user');
 const Post = require('./models/post');
-const Category = require('./models/category');
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -19,7 +18,7 @@ app.post("/register", async (req, res) => {
     try {
       const { username, email, password } = req.body;
 
-      // Vérifier si l'utilisateur existe déjà
+      // Vérifie si l'utilisateur existe déjà
       const existingUser = await User.userExists(username, email);
       if (existingUser) {
         return res.status(400).json({ error: "Cet utilisateur existe déjà." });
@@ -56,7 +55,7 @@ app.get("/user/:id/articles", async (req, res) => {
     }
 });
 
-// ROUTE : Récupérer un article spécifique
+// ROUTE : Récupérer un article
 app.get("/articles/:id", async (req, res) => {
     try {
       const article = await Post.getArticle(req.params.id);
@@ -66,7 +65,7 @@ app.get("/articles/:id", async (req, res) => {
     }
 });
 
-// ROUTE : Récupérer les articles populaires
+// ROUTE : Récupérer les articles
 app.get("/articles", async (req, res) => {
   try {
     const articles = await Post.getAllArticles();
@@ -90,17 +89,6 @@ app.post("/articles", async (req, res) => {
   }
 });
 
-
-// ROUTE : Mettre à jour un article
-app.put("/articles/:id", async (req, res) => {
-    try {
-      const updatedArticle = await Post.updateArticle(req.params.id, req.body);
-      res.status(200).json(updatedArticle);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-});
-
 // ROUTE : Supprimer un article
 app.delete("/articles/:id", async (req, res) => {
     try {
@@ -111,17 +99,7 @@ app.delete("/articles/:id", async (req, res) => {
     }
 });
 
-app.get("/categories", async (req, res) => {
-    try {
-      const categories = await Category.getAllCategories();
-      res.status(200).json(categories);
-    } catch (error) {
-      console.error("Erreur /categories :", error);
-      res.status(500).json({ error: "Erreur serveur lors du chargement des catégories : " + error });
-    }
-});
-
-// GET User by ID
+// ROUTE : Récupérer un utilisateur par ID
 app.get("/user/:id", async (req, res) => {
   try {
     const user = await User.getUserByID(req.params.id);
@@ -159,9 +137,9 @@ app.get("/articles/:id/comments", async (req, res) => {
 // ROUTE : Ajouter un commentaire à un article
 app.post("/articles/:id/comments", async (req, res) => {
   try {
-    const { content, user_id } = req.body; // Assurez-vous que user_id est un entier valide
-    const newComment = await Post.createComment(req.params.id, user_id, content); // Passez l'article ID, user ID, et content
-    res.status(201).json(newComment);  // Retournez le nouveau commentaire ajouté
+    const { content, user_id } = req.body; 
+    const newComment = await Post.createComment(req.params.id, user_id, content); 
+    res.status(201).json(newComment);  
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

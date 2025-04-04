@@ -23,11 +23,6 @@ class Post {
     return result.rows[0];
   }
 
-  static async getArticlesByCategorie(id) {
-    const result = await pool.query("SELECT * FROM articles WHERE category_id = $1", [id]);
-    return result.rows;
-  }
-
   static async getArticlesByUser(id) {
     const result = await pool.query("SELECT * FROM articles WHERE user_id = $1 ORDER BY created_at DESC", [id]);
     return result.rows;
@@ -66,12 +61,6 @@ class Post {
       [article_id, user_id, content] 
     );
     return result.rows[0];
-  }
-
-
-  static async deleteComment(id) {
-    await pool.query("DELETE FROM comments WHERE comment_id = $1", [id]);
-    return { message: "Comment deleted successfully" };
   }
   
   static async searchArticles(search) {
