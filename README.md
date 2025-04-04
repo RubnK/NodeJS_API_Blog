@@ -1,4 +1,4 @@
-# Blog API - A Simple Blog Application
+# Blog EFREI - A Simple Blog Application
 
 **Authors :** [@RubnK](https://github.com/RubnK), [@yayou05](https://github.com/yayou05) & [@len233](https://github.com/len233)
 
