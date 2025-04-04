@@ -28,6 +28,7 @@ This is a simple blog application built with **Node.js** and **PostgreSQL**. It 
 - **Node.js**
 - **Express**
 - **PostgreSQL**
+- **Next.js**
 - **dotenv** (for environment variables)
 
 ---
